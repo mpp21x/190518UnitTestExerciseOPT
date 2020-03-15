@@ -29,7 +29,7 @@ class AuthenticationServiceTest extends TestCase
     {
         $this->stubProfile = Mockery::mock(ProfileDaoInterface::class);
         $this->stubRsa = Mockery::mock(RsaTokenDaoInterface::class);
-        $this->logger = Mockery::mock(LoggerInterface::class);
+        $this->logger = Mockery::spy(LoggerInterface::class);
         $this->target = new AuthenticationService($this->stubProfile, $this->stubRsa, $this->logger);
     }
 
@@ -51,9 +51,8 @@ class AuthenticationServiceTest extends TestCase
         $this->givenProfile('joey', '91');
         $this->givenToken('joey', '000000');
 
-        $this->givenOnceSave('joey');
-
         $this->target->isValid('joey', 'wrong password');
+        $this->givenOnceSave('joey');
     }
 
     protected function givenProfile(string $account, string $password): void
@@ -81,7 +80,7 @@ class AuthenticationServiceTest extends TestCase
      */
     protected function givenOnceSave(string $account)
     {
-        $this->logger->shouldReceive('save')
+        $this->logger->shouldHaveReceived('save')
             ->with(Mockery::on(function ($message) use ($account) {
                 return strpos($message, $account) !== false;
             }))->once();
