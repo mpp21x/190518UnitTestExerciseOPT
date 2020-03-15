@@ -4,6 +4,7 @@ namespace Test;
 
 
 use App\AuthenticationService;
+use App\LoggerInterface;
 use App\ProfileDaoInterface;
 use App\RsaTokenDaoInterface;
 use Mockery;
@@ -18,6 +19,8 @@ class AuthenticationServiceTest extends TestCase
     private $stubProfileDao;
     /** @var RsaTokenDaoInterface|MockInterface */
     private $stubRsaTokenDao;
+    /** @var LoggerInterface|MockInterface */
+    private $logger;
 
     /** @test */
     public function is_valid_test()
@@ -27,7 +30,7 @@ class AuthenticationServiceTest extends TestCase
 
         $this->givenToken($account, "000000");
 
-        $target = new AuthenticationService($this->stubProfileDao, $this->stubRsaTokenDao);
+        $target = new AuthenticationService($this->stubProfileDao, $this->stubRsaTokenDao, $this->logger);
         $actual = $target->isValid($account, "91000000");
         $this->assertTrue($actual);
     }
@@ -50,6 +53,7 @@ class AuthenticationServiceTest extends TestCase
     {
         $this->stubProfileDao = Mockery::mock(ProfileDaoInterface::class);
         $this->stubRsaTokenDao = Mockery::mock(RsaTokenDaoInterface::class);
+        $this->logger = Mockery::mock(LoggerInterface::class);
     }
 
 }
