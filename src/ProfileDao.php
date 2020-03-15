@@ -4,7 +4,7 @@
 namespace App;
 
 
-class ProfileDao
+class ProfileDao implements ProfileDaoInterface
 {
 
     public function getPassword(string $account): string

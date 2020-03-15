@@ -4,7 +4,7 @@
 namespace App;
 
 
-class RsaTokenDao
+class RsaTokenDao implements RsaTokenDaoInterface
 {
     public function getRandom(string $account):string
     {
