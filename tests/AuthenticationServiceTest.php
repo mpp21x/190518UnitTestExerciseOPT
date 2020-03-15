@@ -46,16 +46,12 @@ class AuthenticationServiceTest extends TestCase
         $this->shouldBeValid($account, $password . $token);
     }
 
-    /** @test */
-    public function log_account_when_invalid()
+    public function test_log_account_when_invalid()
     {
         $this->givenProfile('joey', '91');
         $this->givenToken('joey', '000000');
 
-        $this->logger->shouldReceive('save')
-            ->with(Mockery::on(function ($message) {
-                return strpos($message, 'joey') !== false;
-            }))->once();
+        $this->givenOnceSave('joey');
 
         $this->target->isValid('joey', 'wrong password');
     }
@@ -78,6 +74,17 @@ class AuthenticationServiceTest extends TestCase
     {
         $actual = $this->target->isValid($account, $passwordWithToken);
         $this->assertTrue($actual);
+    }
+
+    /**
+     * @param string $account
+     */
+    protected function givenOnceSave(string $account)
+    {
+        $this->logger->shouldReceive('save')
+            ->with(Mockery::on(function ($message) use ($account) {
+                return strpos($message, $account) !== false;
+            }))->once();
     }
 
 
